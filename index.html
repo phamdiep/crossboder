@@ -1,2 +1,668 @@
-# I need to read the actual file content first - using execute_code to get it as base64 won't work here
-# Let me read and pass the full content
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="slides-format" content="viewport" />
+  <title>Cross-Border Payments in APAC: Tech Strategy for SG–VN</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <style type="text/tailwindcss">
+    @theme {
+      --color-bg: #020617;
+      --color-bg-deep: #020617;
+      --color-surface: #020617;
+      --color-text: #e2e8f0;
+      --color-text-secondary: #cbd5f5;
+      --color-text-muted: #64748b;
+      --color-accent-1: #22c55e;
+      --color-accent-2: #22d3ee;
+      --color-accent-3: #a855f7;
+      --color-glass-bg: rgba(15,23,42,0.86);
+      --color-glass-border: rgba(148,163,184,0.55);
+      --color-vignette: rgba(0,0,0,0.55);
+      --font-display: 'Instrument Serif', Georgia, serif;
+      --font-body: 'Inter', system-ui, sans-serif;
+    }
+  </style>
+  <style>
+    :root{--color-bg:#020617;--color-text:#e2e8f0;--glow-color-rgb:34,197,94;}
+    *,*::before,*::after{box-sizing:border-box;}
+    html,body{margin:0;background:var(--color-bg);}
+    body{font-family:var(--font-body);color:var(--color-text);overflow:hidden;height:100vh;width:100vw;}
+    .deck{width:100vw;height:100vh;position:relative;}
+    .slide{position:absolute;inset:0;background:radial-gradient(circle at top left,#0b1120 0,#020617 55%,#000 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;transform:scale(.96);transition:opacity .7s ease,transform .7s ease;pointer-events:none;overflow:hidden;}
+    .slide.active{opacity:1;transform:scale(1);pointer-events:auto;}
+    .slide>.content{position:relative;z-index:2;width:100%;max-width:1120px;padding:clamp(1.5rem,4vw,4rem);}
+    .nav-controls{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:16px;z-index:100;background:rgba(15,23,42,.92);backdrop-filter:blur(14px);padding:10px 24px;border-radius:999px;border:1px solid rgba(148,163,184,.65);}
+    .nav-btn{width:40px;height:40px;border:none;background:rgba(15,23,42,.9);color:#22c55e;border-radius:999px;font-size:1.2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .25s,transform .25s,box-shadow .25s;}
+    .nav-btn:hover{background:rgba(30,64,175,.9);box-shadow:0 0 0 1px rgba(56,189,248,.3);transform:translateY(-1px);}
+    .slide-dots{display:flex;gap:8px;}
+    .dot{width:9px;height:9px;border-radius:999px;background:rgba(148,163,184,.55);cursor:pointer;transition:background .25s,transform .25s,box-shadow .25s;}
+    .dot.active{background:#22c55e;transform:scale(1.35);box-shadow:0 0 0 4px rgba(34,197,94,.22);}
+    .slide-counter{font-size:.8rem;color:#94a3b8;min-width:46px;text-align:center;font-variant-numeric:tabular-nums;}
+    .reveal{opacity:0;transform:translateY(18px);}
+    @keyframes float-slow{0%,100%{transform:translate(0,0) scale(1);}25%{transform:translate(60px,-40px) scale(1.08);}50%{transform:translate(-40px,35px) scale(.94);}75%{transform:translate(45px,10px) scale(1.04);}}
+    @keyframes float-drift{0%,100%{transform:translate(0,0) scale(1) rotate(0deg);}33%{transform:translate(-40px,-50px) scale(1.08) rotate(2deg);}66%{transform:translate(30px,25px) scale(.92) rotate(-2deg);}}
+    @keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-12px);}}
+    .gradient-mesh{position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none;}
+    .blob{position:absolute;border-radius:50%;filter:blur(90px);opacity:.12;animation:float-slow 14s ease-in-out infinite;}
+    .blob:nth-child(2){animation:float-drift 18s ease-in-out infinite;}
+    .blob:nth-child(3){animation:float-slow 22s ease-in-out infinite reverse;}
+    .slide::before{content:"";position:absolute;inset:-60px;z-index:1;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");background-size:260px 260px;mix-blend-mode:soft-light;pointer-events:none;}
+    .slide::after{content:"";position:absolute;inset:0;z-index:1;background:radial-gradient(ellipse at center,transparent 45%,rgba(0,0,0,.65) 100%);pointer-events:none;}
+    .mouse-spotlight{mix-blend-mode:screen;}
+    .text-glow{text-shadow:0 0 26px rgba(var(--glow-color-rgb),0.55),0 0 48px rgba(var(--glow-color-rgb),0.28);}
+    .stat-glow{text-shadow:0 0 36px rgba(var(--glow-color-rgb),0.75),0 0 70px rgba(var(--glow-color-rgb),0.32);}
+    @keyframes glow-pulse{0%,100%{text-shadow:0 0 24px rgba(var(--glow-color-rgb),0.6),0 0 50px rgba(var(--glow-color-rgb),0.25);}50%{text-shadow:0 0 36px rgba(var(--glow-color-rgb),0.9),0 0 80px rgba(var(--glow-color-rgb),0.4);}}
+    .glow-pulse{animation:glow-pulse 3.3s ease-in-out infinite;}
+    .bar-chart{display:flex;align-items:flex-end;gap:clamp(.4rem,1vw,.8rem);height:clamp(120px,22vh,210px);}
+    .bar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:.35rem;}
+    .bar{width:100%;border-radius:8px 8px 0 0;background:linear-gradient(to top,#22c55e,#22d3ee);}
+    .bar-label{font-size:.8rem;color:#cbd5f5;opacity:.9;}
+    .bar-value{font-size:.85rem;color:#e2e8f0;font-variant-numeric:tabular-nums;}
+    .bar-track{position:relative;width:100%;height:0.9rem;border-radius:999px;background:rgba(15,23,42,.95);overflow:hidden;border:1px solid rgba(148,163,184,.55);}
+    .bar-fill{position:absolute;inset:0;width:0;border-radius:999px;background:linear-gradient(to right,#22c55e,#22d3ee);}
+    @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms !important;transition-duration:.2s !important;}}
+  </style>
+</head>
+<body>
+<div class="mouse-spotlight" style="position:fixed;inset:0;z-index:90;pointer-events:none;"></div>
+<div class="deck">
+
+<!-- SLIDE 1: TITLE -->
+<div class="slide active" data-slide="1">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:520px;height:520px;top:-120px;right:-100px;background:#22c55e;"></div>
+    <div class="blob" style="width:320px;height:320px;bottom:-80px;left:-60px;background:#22d3ee;"></div>
+    <div class="blob" style="width:220px;height:220px;top:42%;left:12%;background:#a855f7;"></div>
+  </div>
+  <canvas class="particle-canvas" style="position:absolute;inset:0;z-index:1;"></canvas>
+  <div class="content text-center">
+    <div style="font-size:90px;margin-bottom:1.2rem;animation:float 3s ease-in-out infinite;" class="reveal">🌏</div>
+    <h1 class="reveal" style="font-family:var(--font-display);font-size:clamp(2.4rem,5.5vw,4.2rem);font-weight:900;background:linear-gradient(135deg,#22c55e,#22d3ee,#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:-.02em;margin-bottom:1rem;">Cross-Border Payments in APAC</h1>
+    <p class="reveal" style="font-size:clamp(.9rem,1.6vw,1.25rem);color:#94a3b8;letter-spacing:.35em;text-transform:uppercase;margin-bottom:2rem;">Technology Strategy for Singapore &amp; Vietnam</p>
+    <div class="reveal" style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+      <span style="background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.35);color:#22c55e;padding:.35rem 1.1rem;border-radius:999px;font-size:.85rem;font-weight:600;">Deep Technology</span>
+      <span style="background:rgba(34,211,238,.12);border:1px solid rgba(34,211,238,.35);color:#22d3ee;padding:.35rem 1.1rem;border-radius:999px;font-size:.85rem;font-weight:600;">APAC Networks</span>
+      <span style="background:rgba(168,85,247,.12);border:1px solid rgba(168,85,247,.35);color:#a855f7;padding:.35rem 1.1rem;border-radius:999px;font-size:.85rem;font-weight:600;">2025–2027 Roadmap</span>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 2: AGENDA -->
+<div class="slide" data-slide="2">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:360px;height:360px;top:-80px;right:-60px;background:#22c55e;"></div>
+    <div class="blob" style="width:240px;height:240px;bottom:-50px;left:-40px;background:#22d3ee;opacity:.08;"></div>
+  </div>
+  <div class="content">
+    <p class="reveal" style="text-transform:uppercase;letter-spacing:.3em;color:#22c55e;font-size:.8rem;font-weight:700;margin-bottom:.5rem;">Agenda</p>
+    <h2 class="reveal" style="font-family:var(--font-display);font-size:clamp(1.8rem,3.5vw,2.6rem);font-weight:700;margin-bottom:2rem;">What We Cover Today</h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+      <div class="reveal" style="background:rgba(15,23,42,.86);border:1px solid rgba(148,163,184,.55);border-radius:14px;padding:1.2rem 1.4rem;display:flex;gap:1rem;align-items:flex-start;">
+        <span style="background:linear-gradient(135deg,#22c55e,#22d3ee);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-size:1.6rem;font-weight:900;">01</span>
+        <div><div style="font-weight:700;margin-bottom:.3rem;">APAC & SG–VN Context</div><div style="color:#94a3b8;font-size:.88rem;">Market size, BIS G20 roadmap, policy environment</div></div>
+      </div>
+      <div class="reveal" style="background:rgba(15,23,42,.86);border:1px solid rgba(148,163,184,.55);border-radius:14px;padding:1.2rem 1.4rem;display:flex;gap:1rem;align-items:flex-start;">
+        <span style="background:linear-gradient(135deg,#22c55e,#22d3ee);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-size:1.6rem;font-weight:900;">02</span>
+        <div><div style="font-weight:700;margin-bottom:.3rem;">Payment Infrastructure</div><div style="color:#94a3b8;font-size:.88rem;">PayNow, FAST, NAPAS, VietQR, wallets</div></div>
+      </div>
+      <div class="reveal" style="background:rgba(15,23,42,.86);border:1px solid rgba(148,163,184,.55);border-radius:14px;padding:1.2rem 1.4rem;display:flex;gap:1rem;align-items:flex-start;">
+        <span style="background:linear-gradient(135deg,#22c55e,#22d3ee);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-size:1.6rem;font-weight:900;">03</span>
+        <div><div style="font-weight:700;margin-bottom:.3rem;">Deep Technology Stack</div><div style="color:#94a3b8;font-size:.88rem;">ISO 20022, DLT, CBDC, tokenized rails</div></div>
+      </div>
+      <div class="reveal" style="background:rgba(15,23,42,.86);border:1px solid rgba(148,163,184,.55);border-radius:14px;padding:1.2rem 1.4rem;display:flex;gap:1rem;align-items:flex-start;">
+        <span style="background:linear-gradient(135deg,#22c55e,#22d3ee);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-size:1.6rem;font-weight:900;">04</span>
+        <div><div style="font-weight:700;margin-bottom:.3rem;">Network & Vendor Landscape</div><div style="color:#94a3b8;font-size:.88rem;">SWIFT gpi, Ripple, Visa B2B, IPS linkages</div></div>
+      </div>
+      <div class="reveal" style="background:rgba(15,23,42,.86);border:1px solid rgba(148,163,184,.55);border-radius:14px;padding:1.2rem 1.4rem;display:flex;gap:1rem;align-items:flex-start;">
+        <span style="background:linear-gradient(135deg,#22c55e,#22d3ee);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-size:1.6rem;font-weight:900;">05</span>
+        <div><div style="font-weight:700;margin-bottom:.3rem;">Architecture Options</div><div style="color:#94a3b8;font-size:.88rem;">3 options: SWIFT-centric, IPS-first, tokenized overlay</div></div>
+      </div>
+      <div class="reveal" style="background:rgba(15,23,42,.86);border:1px solid rgba(148,163,184,.55);border-radius:14px;padding:1.2rem 1.4rem;display:flex;gap:1rem;align-items:flex-start;">
+        <span style="background:linear-gradient(135deg,#22c55e,#22d3ee);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-size:1.6rem;font-weight:900;">06</span>
+        <div><div style="font-weight:700;margin-bottom:.3rem;">Execution Roadmap</div><div style="color:#94a3b8;font-size:.88rem;">0–24 month phased delivery plan</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 3: MARKET SIZE -->
+<div class="slide" data-slide="3">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:400px;height:400px;top:-100px;left:-80px;background:#22d3ee;"></div>
+    <div class="blob" style="width:280px;height:280px;bottom:-60px;right:-40px;background:#22c55e;opacity:.09;"></div>
+  </div>
+  <div class="content">
+    <p class="reveal" style="text-transform:uppercase;letter-spacing:.3em;color:#22d3ee;font-size:.8rem;font-weight:700;margin-bottom:.5rem;">Market Context</p>
+    <h2 class="reveal" style="font-family:var(--font-display);font-size:clamp(1.8rem,3.5vw,2.6rem);font-weight:700;margin-bottom:2rem;">APAC Cross-Border Payments — Scale &amp; Growth</h2>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem;margin-bottom:1.6rem;">
+      <div class="reveal" style="background:rgba(15,23,42,.86);border:1px solid rgba(148,163,184,.55);border-radius:14px;padding:1.4rem;text-align:center;">
+        <div class="stat-glow" style="font-size:2.4rem;font-weight:900;background:linear-gradient(135deg,#22c55e,#22d3ee);-webkit-background-clip:text;-webkit-text-fill-color:transparent;" data-count="43">0</div>
+        <div style="color:#94a3b8;font-size:.85rem;margin-top:.3rem;">Trillion USD APAC cross-border payment flows by 2030</div>
+      </div>
+      <div class="reveal" style="background:rgba(15,23,42,.86);border:1px solid rgba(148,163,184,.55);border-radius:14px;padding:1.4rem;text-align:center;">
+        <div class="stat-glow" style="font-size:2.4rem;font-weight:900;background:linear-gradient(135deg,#22d3ee,#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">$9B+</div>
+        <div style="color:#94a3b8;font-size:.85rem;margin-top:.3rem;">SG–VN bilateral remittance &amp; trade corridor annually</div>
+      </div>
+      <div class="reveal" style="background:rgba(15,23,42,.86);border:1px solid rgba(148,163,184,.55);border-radius:14px;padding:1.4rem;text-align:center;">
+        <div class="stat-glow" style="font-size:2.4rem;font-weight:900;background:linear-gradient(135deg,#a855f7,#22c55e);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">6.4%</div>
+        <div style="color:#94a3b8;font-size:.85rem;margin-top:.3rem;">Global average cost of remittance — vs. G20 target of &lt;3%</div>
+      </div>
+    </div>
+    <div class="reveal" style="background:rgba(15,23,42,.86);border:1px solid rgba(34,197,94,.25);border-radius:14px;padding:1.2rem 1.6rem;border-left:3px solid #22c55e;">
+      <p style="margin:0;color:#cbd5f5;font-size:.95rem;">🎯 <strong>BIS G20 Roadmap targets</strong>: all cross-border payments globally to be &lt;1 hour and available 24/7 by 2027; cost &lt;3% retail, &lt;1% wholesale.</p>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 4: SG INFRASTRUCTURE -->
+<div class="slide" data-slide="4">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:380px;height:380px;top:-90px;right:-70px;background:#22c55e;"></div>
+    <div class="blob" style="width:220px;height:220px;bottom:-50px;left:-30px;background:#a855f7;opacity:.09;"></div>
+  </div>
+  <div class="content">
+    <p class="reveal" style="text-transform:uppercase;letter-spacing:.3em;color:#22c55e;font-size:.8rem;font-weight:700;margin-bottom:.5rem;">Singapore</p>
+    <h2 class="reveal" style="font-family:var(--font-display);font-size:clamp(1.8rem,3.5vw,2.6rem);font-weight:700;margin-bottom:1.5rem;">Payment Infrastructure — Singapore</h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+      <div class="reveal" style="background:rgba(15,23,42,.86);border:1px solid rgba(148,163,184,.55);border-radius:14px;padding:1.3rem;">
+        <div style="font-size:1.4rem;margin-bottom:.5rem;">⚡</div>
+        <div style="font-weight:700;margin-bottom:.4rem;color:#22c55e;">FAST &amp; PayNow</div>
+        <div style="color:#94a3b8;font-size:.88rem;">Real-time retail payments; PayNow enables mobile/NRIC addressing. Linked to PromptPay (TH), UPI (IN), Malaysian DuitNow.</div>
+      </div>
+      <div class="reveal" style="background:rgba(15,23,42,.86);border:1px solid rgba(148,163,184,.55);border-radius:14px;padding:1.3rem;">
+        <div style="font-size:1.4rem;margin-bottom:.5rem;">🔗</div>
+        <div style="font-weight:700;margin-bottom:.4rem;color:#22d3ee;">SGQR &amp; SPaN</div>
+        <div style="color:#94a3b8;font-size:.88rem;">Unified QR standard. MAS/ABS consolidating into Singapore Payments Network (SPaN) — merging PayNow, FAST, GIRO, SGQR under one platform.</div>
+      </div>
+      <div class="reveal" style="background:rgba(15,23,42,.86);border:1px solid rgba(148,163,184,.55);border-radius:14px;padding:1.3rem;">
+        <div style="font-size:1.4rem;margin-bottom:.5rem;">🏦</div>
+        <div style="font-weight:700;margin-bottom:.4rem;color:#a855f7;">SWIFT &amp; Correspondent Banking</div>
+        <div style="color:#94a3b8;font-size:.88rem;">SG is a major SWIFT hub; gpi enables end-to-end tracking, same-day value for B2B/wholesale high-value transfers.</div>
+      </div>
+      <div class="reveal" style="background:rgba(15,23,42,.86);border:1px solid rgba(148,163,184,.55);border-radius:14px;padding:1.3rem;">
+        <div style="font-size:1.4rem;margin-bottom:.5rem;">🧪</div>
+        <div style="font-weight:700;margin-bottom:.4rem;color:#22c55e;">MAS Innovation (Ubin+, BLOOM)</div>
+        <div style="color:#94a3b8;font-size:.88rem;">Wholesale CBDC pilots; BLOOM enables programmable settlement using tokenized bank liabilities and regulated stablecoins.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 5: VN INFRASTRUCTURE -->
+<div class="slide" data-slide="5">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:380px;height:380px;top:-90px;left:-70px;background:#22d3ee;"></div>
+    <div class="blob" style="width:240px;height:240px;bottom:-60px;right:-40px;background:#22c55e;opacity:.09;"></div>
+  </div>
+  <div class="content">
+    <p class="reveal" style="text-transform:uppercase;letter-spacing:.3em;color:#22d3ee;font-size:.8rem;font-weight:700;margin-bottom:.5rem;">Vietnam</p>
+    <h2 class="reveal" style="font-family:var(--font-display);font-size:clamp(1.8rem,3.5vw,2.6rem);font-weight:700;margin-bottom:1.5rem;">Payment Infrastructure — Vietnam</h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+      <div class="reveal" style="background:rgba(15,23,42,.86);border:1px solid rgba(148,163,184,.55);border-radius:14px;padding:1.3rem;">
+        <div style="font-size:1.4rem;margin-bottom:.5rem;">🏃</div>
+        <div style="font-weight:700;margin-bottom:.4rem;color:#22d3ee;">NAPAS 24/7 &amp; Interbank</div>
+        <div style="color:#94a3b8;font-size:.88rem;">National real-time ACH switch; processes domestic instant transfers and supports cross-border QR linkages (TH, LA, KR).</div>
+      </div>
+      <div class="reveal" style="background:rgba(15,23,42,.86);border:1px solid rgba(148,163,184,.55);border-radius:14px;padding:1.3rem;">
+        <div style="font-size:1.4rem;margin-bottom:.5rem;">📲</div>
+        <div style="font-weight:700;margin-bottom:.4rem;color:#22c55e;">VietQR &amp; VietQR Global</div>
+        <div style="color:#94a3b8;font-size:.88rem;">National QR standard linked to NAPAS. VietQR Global enables VN consumers to pay via QR abroad; expanding to CN, JP, SG, IN.</div>
+      </div>
+      <div class="reveal" style="background:rgba(15,23,42,.86);border:1px solid rgba(148,163,184,.55);border-radius:14px;padding:1.3rem;">
+        <div style="font-size:1.4rem;margin-bottom:.5rem;">💳</div>
+        <div style="font-weight:700;margin-bottom:.4rem;color:#a855f7;">MoMo, ZaloPay &amp; E-Wallets</div>
+        <div style="color:#94a3b8;font-size:.88rem;">Now official payment instruments under SBV regulation; MoMo has 31M+ users; cross-border QR usage recognized for travelers.</div>
+      </div>
+      <div class="reveal" style="background:rgba(15,23,42,.86);border:1px solid rgba(148,163,184,.55);border-radius:14px;padding:1.3rem;">
+        <div style="font-size:1.4rem;margin-bottom:.5rem;">🌐</div>
+        <div style="font-weight:700;margin-bottom:.4rem;color:#22d3ee;">SBV Regulatory Sandbox</div>
+        <div style="color:#94a3b8;font-size:.88rem;">Active fintech sandbox; Law on Credit Institutions 2024 and updated payment intermediary rules open new corridors for licensed operators.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 6: DEEP TECH STACK -->
+<div class="slide" data-slide="6">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:400px;height:400px;top:-100px;right:-80px;background:#a855f7;"></div>
+    <div class="blob" style="width:280px;height:280px;bottom:-60px;left:-40px;background:#22c55e;opacity:.09;"></div>
+  </div>
+  <canvas class="particle-canvas" style="position:absolute;inset:0;z-index:1;"></canvas>
+  <div class="content">
+    <p class="reveal" style="text-transform:uppercase;letter-spacing:.3em;color:#a855f7;font-size:.8rem;font-weight:700;margin-bottom:.5rem;">Deep Technology</p>
+    <h2 class="reveal" style="font-family:var(--font-display);font-size:clamp(1.8rem,3.5vw,2.6rem);font-weight:700;margin-bottom:1.5rem;">Core Technology Building Blocks</h2>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;">
+      <div class="reveal" style="background:rgba(15,23,42,.86);border:1px solid rgba(168,85,247,.3);border-radius:14px;padding:1.2rem;">
+        <div style="font-size:1.6rem;margin-bottom:.5rem;">📋</div>
+        <div style="font-weight:700;margin-bottom:.3rem;color:#a855f7;">ISO 20022</div>
+        <div style="color:#94a3b8;font-size:.85rem;">Rich-data payment hub. pacs.008 messages carry full remittance info; structured UETR tracking; better AML/compliance.</div>
+      </div>
+      <div class="reveal" style="background:rgba(15,23,42,.86);border:1px solid rgba(34,211,238,.3);border-radius:14px;padding:1.2rem;">
+        <div style="font-size:1.6rem;margin-bottom:.5rem;">⛓️</div>
+        <div style="font-weight:700;margin-bottom:.3rem;color:#22d3ee;">DLT &amp; Tokenized Rails</div>
+        <div style="color:#94a3b8;font-size:.85rem;">Tokenized settlement via Ripple, MAS BLOOM, BIS Nexus. Atomic settlement removes nostro/vostro prefunding costs.</div>
+      </div>
+      <div class="reveal" style="background:rgba(15,23,42,.86);border:1px solid rgba(34,197,94,.3);border-radius:14px;padding:1.2rem;">
+        <div style="font-size:1.6rem;margin-bottom:.5rem;">🤖</div>
+        <div style="font-weight:700;margin-bottom:.3rem;color:#22c55e;">AI/ML Compliance</div>
+        <div style="color:#94a3b8;font-size:.85rem;">Real-time AML, sanctions screening, velocity checks embedded in payment flow. &lt;500ms inline compliance decision.</div>
+      </div>
+      <div class="reveal" style="background:rgba(15,23,42,.86);border:1px solid rgba(148,163,184,.3);border-radius:14px;padding:1.2rem;">
+        <div style="font-size:1.6rem;margin-bottom:.5rem;">🔄</div>
+        <div style="font-weight:700;margin-bottom:.3rem;color:#22c55e;">FX Engine</div>
+        <div style="color:#94a3b8;font-size:.85rem;">Real-time SGD/VND rate streaming; pre-conversion quote lock; transparent FX margin disclosure per MAS/SBV requirements.</div>
+      </div>
+      <div class="reveal" style="background:rgba(15,23,42,.86);border:1px solid rgba(148,163,184,.3);border-radius:14px;padding:1.2rem;">
+        <div style="font-size:1.6rem;margin-bottom:.5rem;">🔌</div>
+        <div style="font-weight:700;margin-bottom:.3rem;color:#22d3ee;">API Gateway &amp; Orchestration</div>
+        <div style="color:#94a3b8;font-size:.85rem;">RESTful + ISO 20022 dual-mode APIs. Smart routing: selects fastest/cheapest rail per transaction (instant vs SWIFT vs DLT).</div>
+      </div>
+      <div class="reveal" style="background:rgba(15,23,42,.86);border:1px solid rgba(148,163,184,.3);border-radius:14px;padding:1.2rem;">
+        <div style="font-size:1.6rem;margin-bottom:.5rem;">🔐</div>
+        <div style="font-weight:700;margin-bottom:.3rem;color:#a855f7;">PII Tokenization</div>
+        <div style="color:#94a3b8;font-size:.85rem;">Data minimization across borders; tokenized identifiers comply with ASEAN cross-border data flow and VN localization rules.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 7: NETWORK LANDSCAPE -->
+<div class="slide" data-slide="7">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:360px;height:360px;top:-80px;left:-60px;background:#22c55e;"></div>
+    <div class="blob" style="width:260px;height:260px;bottom:-50px;right:-40px;background:#22d3ee;opacity:.09;"></div>
+  </div>
+  <div class="content">
+    <p class="reveal" style="text-transform:uppercase;letter-spacing:.3em;color:#22c55e;font-size:.8rem;font-weight:700;margin-bottom:.5rem;">Network &amp; Vendors</p>
+    <h2 class="reveal" style="font-family:var(--font-display);font-size:clamp(1.8rem,3.5vw,2.6rem);font-weight:700;margin-bottom:1.5rem;">Rail &amp; Network Landscape (2025–2027)</h2>
+    <table class="reveal" style="width:100%;border-collapse:separate;border-spacing:0 8px;font-size:.88rem;">
+      <thead>
+        <tr>
+          <th style="text-align:left;color:#94a3b8;font-weight:600;padding:.4rem .8rem;text-transform:uppercase;font-size:.75rem;letter-spacing:.08em;">Network/Rail</th>
+          <th style="text-align:left;color:#94a3b8;font-weight:600;padding:.4rem .8rem;text-transform:uppercase;font-size:.75rem;letter-spacing:.08em;">Type</th>
+          <th style="text-align:left;color:#94a3b8;font-weight:600;padding:.4rem .8rem;text-transform:uppercase;font-size:.75rem;letter-spacing:.08em;">Best For</th>
+          <th style="text-align:left;color:#94a3b8;font-weight:600;padding:.4rem .8rem;text-transform:uppercase;font-size:.75rem;letter-spacing:.08em;">SG–VN Readiness</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="background:rgba(15,23,42,.86);border-radius:10px;">
+          <td style="padding:.7rem .8rem;border-radius:10px 0 0 10px;font-weight:600;color:#e2e8f0;">SWIFT gpi</td>
+          <td style="padding:.7rem .8rem;color:#94a3b8;">Correspondent</td>
+          <td style="padding:.7rem .8rem;color:#94a3b8;">High-value B2B, trade</td>
+          <td style="padding:.7rem .8rem;border-radius:0 10px 10px 0;"><span style="background:rgba(34,197,94,.15);color:#22c55e;padding:.2rem .7rem;border-radius:999px;font-size:.8rem;">✅ Live</span></td>
+        </tr>
+        <tr style="background:rgba(15,23,42,.7);border-radius:10px;">
+          <td style="padding:.7rem .8rem;border-radius:10px 0 0 10px;font-weight:600;color:#e2e8f0;">PayNow–NAPAS Link</td>
+          <td style="padding:.7rem .8rem;color:#94a3b8;">IPS Bilateral</td>
+          <td style="padding:.7rem .8rem;color:#94a3b8;">Retail remittance, C2C</td>
+          <td style="padding:.7rem .8rem;border-radius:0 10px 10px 0;"><span style="background:rgba(234,179,8,.15);color:#eab308;padding:.2rem .7rem;border-radius:999px;font-size:.8rem;">🔜 Planned</span></td>
+        </tr>
+        <tr style="background:rgba(15,23,42,.86);border-radius:10px;">
+          <td style="padding:.7rem .8rem;border-radius:10px 0 0 10px;font-weight:600;color:#e2e8f0;">VietQR Global / SGQR</td>
+          <td style="padding:.7rem .8rem;color:#94a3b8;">QR Bilateral</td>
+          <td style="padding:.7rem .8rem;color:#94a3b8;">Tourism, merchant QR</td>
+          <td style="padding:.7rem .8rem;border-radius:0 10px 10px 0;"><span style="background:rgba(234,179,8,.15);color:#eab308;padding:.2rem .7rem;border-radius:999px;font-size:.8rem;">🔜 In progress</span></td>
+        </tr>
+        <tr style="background:rgba(15,23,42,.7);border-radius:10px;">
+          <td style="padding:.7rem .8rem;border-radius:10px 0 0 10px;font-weight:600;color:#e2e8f0;">Visa B2B Connect</td>
+          <td style="padding:.7rem .8rem;color:#94a3b8;">Multilateral A2A</td>
+          <td style="padding:.7rem .8rem;color:#94a3b8;">SME B2B, trade finance</td>
+          <td style="padding:.7rem .8rem;border-radius:0 10px 10px 0;"><span style="background:rgba(34,197,94,.15);color:#22c55e;padding:.2rem .7rem;border-radius:999px;font-size:.8rem;">✅ Available</span></td>
+        </tr>
+        <tr style="background:rgba(15,23,42,.86);border-radius:10px;">
+          <td style="padding:.7rem .8rem;border-radius:10px 0 0 10px;font-weight:600;color:#e2e8f0;">Ripple Payments</td>
+          <td style="padding:.7rem .8rem;color:#94a3b8;">DLT/Tokenized</td>
+          <td style="padding:.7rem .8rem;color:#94a3b8;">Instant settlement, FX</td>
+          <td style="padding:.7rem .8rem;border-radius:0 10px 10px 0;"><span style="background:rgba(34,197,94,.15);color:#22c55e;padding:.2rem .7rem;border-radius:999px;font-size:.8rem;">✅ MPI licensed SG</span></td>
+        </tr>
+        <tr style="background:rgba(15,23,42,.7);border-radius:10px;">
+          <td style="padding:.7rem .8rem;border-radius:10px 0 0 10px;font-weight:600;color:#e2e8f0;">BIS Project Nexus</td>
+          <td style="padding:.7rem .8rem;color:#94a3b8;">IPS Hub (ASEAN+)</td>
+          <td style="padding:.7rem .8rem;color:#94a3b8;">Multi-currency ASEAN</td>
+          <td style="padding:.7rem .8rem;border-radius:0 10px 10px 0;"><span style="background:rgba(168,85,247,.15);color:#a855f7;padding:.2rem .7rem;border-radius:999px;font-size:.8rem;">🔭 2026–27</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- SLIDE 8: USE CASES -->
+<div class="slide" data-slide="8">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:360px;height:360px;top:-90px;right:-60px;background:#22d3ee;"></div>
+    <div class="blob" style="width:240px;height:240px;bottom:-50px;left:-40px;background:#a855f7;opacity:.09;"></div>
+  </div>
+  <div class="content">
+    <p class="reveal" style="text-transform:uppercase;letter-spacing:.3em;color:#22d3ee;font-size:.8rem;font-weight:700;margin-bottom:.5rem;">Use Cases</p>
+    <h2 class="reveal" style="font-family:var(--font-display);font-size:clamp(1.8rem,3.5vw,2.6rem);font-weight:700;margin-bottom:1.5rem;">Priority SG–VN Payment Use Cases</h2>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;">
+      <div class="reveal" style="background:rgba(15,23,42,.86);border:1px solid rgba(34,211,238,.25);border-top:3px solid #22d3ee;border-radius:14px;padding:1.2rem;">
+        <div style="font-size:1.8rem;margin-bottom:.5rem;">👷</div>
+        <div style="font-weight:700;margin-bottom:.4rem;">Worker Remittance</div>
+        <div style="color:#94a3b8;font-size:.85rem;margin-bottom:.8rem;">~200K Vietnamese workers in SG sending money home. Target: instant, &lt;1% fee, mobile-first.</div>
+        <div style="display:flex;gap:.4rem;flex-wrap:wrap;">
+          <span style="background:rgba(34,211,238,.1);color:#22d3ee;padding:.15rem .6rem;border-radius:999px;font-size:.75rem;">PayNow→NAPAS</span>
+          <span style="background:rgba(34,211,238,.1);color:#22d3ee;padding:.15rem .6rem;border-radius:999px;font-size:.75rem;">e-wallet payout</span>
+        </div>
+      </div>
+      <div class="reveal" style="background:rgba(15,23,42,.86);border:1px solid rgba(34,197,94,.25);border-top:3px solid #22c55e;border-radius:14px;padding:1.2rem;">
+        <div style="font-size:1.8rem;margin-bottom:.5rem;">🏭</div>
+        <div style="font-weight:700;margin-bottom:.4rem;">SME Trade &amp; B2B</div>
+        <div style="color:#94a3b8;font-size:.85rem;margin-bottom:.8rem;">SG–VN trade $36B+ annually. SMEs need transparent FX, structured remittance data, tracking.</div>
+        <div style="display:flex;gap:.4rem;flex-wrap:wrap;">
+          <span style="background:rgba(34,197,94,.1);color:#22c55e;padding:.15rem .6rem;border-radius:999px;font-size:.75rem;">SWIFT gpi</span>
+          <span style="background:rgba(34,197,94,.1);color:#22c55e;padding:.15rem .6rem;border-radius:999px;font-size:.75rem;">Visa B2B Connect</span>
+        </div>
+      </div>
+      <div class="reveal" style="background:rgba(15,23,42,.86);border:1px solid rgba(168,85,247,.25);border-top:3px solid #a855f7;border-radius:14px;padding:1.2rem;">
+        <div style="font-size:1.8rem;margin-bottom:.5rem;">✈️</div>
+        <div style="font-weight:700;margin-bottom:.4rem;">Tourism &amp; QR Commerce</div>
+        <div style="color:#94a3b8;font-size:.85rem;margin-bottom:.8rem;">2M+ SG–VN travelers/year. QR-based acceptance: VietQR at SG merchants &amp; SGQR at VN merchants.</div>
+        <div style="display:flex;gap:.4rem;flex-wrap:wrap;">
+          <span style="background:rgba(168,85,247,.1);color:#a855f7;padding:.15rem .6rem;border-radius:999px;font-size:.75rem;">VietQR Global</span>
+          <span style="background:rgba(168,85,247,.1);color:#a855f7;padding:.15rem .6rem;border-radius:999px;font-size:.75rem;">SGQR linkage</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 9: ARCHITECTURE OPTIONS -->
+<div class="slide" data-slide="9">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:400px;height:400px;top:-100px;left:-80px;background:#22c55e;"></div>
+    <div class="blob" style="width:260px;height:260px;bottom:-60px;right:-40px;background:#a855f7;opacity:.09;"></div>
+  </div>
+  <div class="content">
+    <p class="reveal" style="text-transform:uppercase;letter-spacing:.3em;color:#22c55e;font-size:.8rem;font-weight:700;margin-bottom:.5rem;">Architecture</p>
+    <h2 class="reveal" style="font-family:var(--font-display);font-size:clamp(1.8rem,3.5vw,2.6rem);font-weight:700;margin-bottom:1.5rem;">Three Architecture Options</h2>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;">
+      <div class="reveal" style="background:rgba(15,23,42,.86);border:1px solid rgba(148,163,184,.3);border-radius:14px;padding:1.2rem;">
+        <div style="text-transform:uppercase;letter-spacing:.1em;font-size:.75rem;color:#94a3b8;margin-bottom:.5rem;">Option A</div>
+        <div style="font-weight:700;font-size:1.05rem;margin-bottom:.6rem;">SWIFT-Centric</div>
+        <ul style="color:#94a3b8;font-size:.85rem;padding-left:1.1rem;margin:0 0 .8rem;">
+          <li>SWIFT gpi as primary rail</li>
+          <li>Local payout via NAPAS/wallets</li>
+          <li>Lower build complexity</li>
+          <li>Higher cost &amp; slower for retail</li>
+        </ul>
+        <span style="background:rgba(234,179,8,.1);color:#eab308;padding:.2rem .7rem;border-radius:999px;font-size:.78rem;">⚠ Not optimal for retail</span>
+      </div>
+      <div class="reveal" style="background:rgba(15,23,42,.86);border:2px solid rgba(34,197,94,.5);border-radius:14px;padding:1.2rem;position:relative;">
+        <div style="position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#22c55e,#22d3ee);color:#020617;padding:.2rem .9rem;border-radius:999px;font-size:.75rem;font-weight:700;white-space:nowrap;">✅ Recommended</div>
+        <div style="text-transform:uppercase;letter-spacing:.1em;font-size:.75rem;color:#94a3b8;margin-bottom:.5rem;">Option B</div>
+        <div style="font-weight:700;font-size:1.05rem;margin-bottom:.6rem;color:#22c55e;">Instant-Rail First Hub</div>
+        <ul style="color:#94a3b8;font-size:.85rem;padding-left:1.1rem;margin:0 0 .8rem;">
+          <li>FAST/PayNow (SG) + NAPAS/VietQR (VN)</li>
+          <li>SWIFT for high-value B2B fallback</li>
+          <li>Embedded FX + compliance</li>
+          <li>Supports all 3 use cases</li>
+        </ul>
+        <span style="background:rgba(34,197,94,.1);color:#22c55e;padding:.2rem .7rem;border-radius:999px;font-size:.78rem;">⚡ Best cost/speed balance</span>
+      </div>
+      <div class="reveal" style="background:rgba(15,23,42,.86);border:1px solid rgba(168,85,247,.3);border-radius:14px;padding:1.2rem;">
+        <div style="text-transform:uppercase;letter-spacing:.1em;font-size:.75rem;color:#94a3b8;margin-bottom:.5rem;">Option C</div>
+        <div style="font-weight:700;font-size:1.05rem;margin-bottom:.6rem;color:#a855f7;">B + Tokenized Overlay</div>
+        <ul style="color:#94a3b8;font-size:.85rem;padding-left:1.1rem;margin:0 0 .8rem;">
+          <li>Option B + Ripple/BLOOM rails</li>
+          <li>Atomic settlement for wholesale</li>
+          <li>Higher build complexity</li>
+          <li>Future-proof for CBDC era</li>
+        </ul>
+        <span style="background:rgba(168,85,247,.1);color:#a855f7;padding:.2rem .7rem;border-radius:999px;font-size:.78rem;">🔭 Strategic long-term</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 10: LOGICAL ARCHITECTURE -->
+<div class="slide" data-slide="10">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:380px;height:380px;top:-90px;right:-70px;background:#22d3ee;"></div>
+    <div class="blob" style="width:240px;height:240px;bottom:-50px;left:-40px;background:#22c55e;opacity:.09;"></div>
+  </div>
+  <div class="content">
+    <p class="reveal" style="text-transform:uppercase;letter-spacing:.3em;color:#22d3ee;font-size:.8rem;font-weight:700;margin-bottom:.5rem;">Logical Architecture</p>
+    <h2 class="reveal" style="font-family:var(--font-display);font-size:clamp(1.6rem,3vw,2.2rem);font-weight:700;margin-bottom:1.4rem;">Option B — Instant-Rail First Hub (Recommended)</h2>
+    <div class="reveal" style="display:flex;flex-direction:column;gap:.7rem;">
+      <div style="background:rgba(34,211,238,.1);border:1px solid rgba(34,211,238,.3);border-radius:12px;padding:.9rem 1.2rem;display:flex;align-items:center;gap:1rem;">
+        <span style="font-size:1.2rem;">🖥️</span>
+        <div><span style="font-weight:700;color:#22d3ee;">Layer 1 — Channel &amp; API Gateway</span> <span style="color:#94a3b8;font-size:.88rem;">Mobile app, Internet Banking, Open API (REST + ISO 20022 dual-mode)</span></div>
+      </div>
+      <div style="text-align:center;color:#94a3b8;font-size:.8rem;">▼</div>
+      <div style="background:rgba(34,197,94,.1);border:2px solid rgba(34,197,94,.4);border-radius:12px;padding:.9rem 1.2rem;display:flex;align-items:center;gap:1rem;">
+        <span style="font-size:1.2rem;">🔀</span>
+        <div><span style="font-weight:700;color:#22c55e;">Layer 2 — Cross-Border Orchestration Hub</span> <span style="color:#94a3b8;font-size:.88rem;">Smart routing, FX engine, real-time AML/sanctions, ISO 20022 canonical model, UETR tracking, observability</span></div>
+      </div>
+      <div style="text-align:center;color:#94a3b8;font-size:.8rem;">▼</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.7rem;">
+        <div style="background:rgba(15,23,42,.86);border:1px solid rgba(148,163,184,.3);border-radius:12px;padding:.8rem 1rem;">
+          <span style="font-weight:700;font-size:.9rem;color:#e2e8f0;">🇸🇬 SG Connectors</span>
+          <div style="color:#94a3b8;font-size:.82rem;margin-top:.3rem;">FAST / PayNow / SGQR / SWIFT gpi / MAS BLOOM</div>
+        </div>
+        <div style="background:rgba(15,23,42,.86);border:1px solid rgba(148,163,184,.3);border-radius:12px;padding:.8rem 1rem;">
+          <span style="font-weight:700;font-size:.9rem;color:#e2e8f0;">🇻🇳 VN Connectors</span>
+          <div style="color:#94a3b8;font-size:.82rem;margin-top:.3rem;">NAPAS 24/7 / VietQR / MoMo / ZaloPay / SWIFT</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 11: COMPLIANCE & REGULATORY -->
+<div class="slide" data-slide="11">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:360px;height:360px;top:-80px;left:-60px;background:#a855f7;"></div>
+    <div class="blob" style="width:240px;height:240px;bottom:-50px;right:-40px;background:#22c55e;opacity:.09;"></div>
+  </div>
+  <div class="content">
+    <p class="reveal" style="text-transform:uppercase;letter-spacing:.3em;color:#a855f7;font-size:.8rem;font-weight:700;margin-bottom:.5rem;">Regulatory &amp; Compliance</p>
+    <h2 class="reveal" style="font-family:var(--font-display);font-size:clamp(1.8rem,3.5vw,2.6rem);font-weight:700;margin-bottom:1.5rem;">Key Regulatory Considerations</h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+      <div class="reveal" style="border-left:3px solid #22c55e;background:rgba(15,23,42,.86);border-radius:0 12px 12px 0;padding:1rem 1.2rem;">
+        <div style="font-weight:700;margin-bottom:.3rem;color:#22c55e;">🇸🇬 MAS (Singapore)</div>
+        <ul style="color:#94a3b8;font-size:.85rem;margin:0;padding-left:1.1rem;">
+          <li>Major Payment Institution (MPI) licence required</li>
+          <li>PS Act 2019 — digital payment tokens, e-money</li>
+          <li>MAS TRM notices for technology risk</li>
+          <li>SGFIU AML/CFT reporting obligations</li>
+        </ul>
+      </div>
+      <div class="reveal" style="border-left:3px solid #22d3ee;background:rgba(15,23,42,.86);border-radius:0 12px 12px 0;padding:1rem 1.2rem;">
+        <div style="font-weight:700;margin-bottom:.3rem;color:#22d3ee;">🇻🇳 SBV (Vietnam)</div>
+        <ul style="color:#94a3b8;font-size:.85rem;margin:0;padding-left:1.1rem;">
+          <li>Payment intermediary licence / agency banking</li>
+          <li>Law on Credit Institutions 2024</li>
+          <li>Circular 40 — e-wallet &amp; QR regulations</li>
+          <li>Data localization for personal data of VN residents</li>
+        </ul>
+      </div>
+      <div class="reveal" style="border-left:3px solid #a855f7;background:rgba(15,23,42,.86);border-radius:0 12px 12px 0;padding:1rem 1.2rem;">
+        <div style="font-weight:700;margin-bottom:.3rem;color:#a855f7;">🌏 Cross-Border Data</div>
+        <ul style="color:#94a3b8;font-size:.85rem;margin:0;padding-left:1.1rem;">
+          <li>ASEAN cross-border data flow framework</li>
+          <li>PII tokenization to minimize data transfer</li>
+          <li>PDPA (SG) + PDPD (VN) dual-compliance</li>
+        </ul>
+      </div>
+      <div class="reveal" style="border-left:3px solid #22c55e;background:rgba(15,23,42,.86);border-radius:0 12px 12px 0;padding:1rem 1.2rem;">
+        <div style="font-weight:700;margin-bottom:.3rem;color:#22c55e;">🛡️ AML &amp; Sanctions</div>
+        <ul style="color:#94a3b8;font-size:.85rem;margin:0;padding-left:1.1rem;">
+          <li>Real-time OFAC/UN/EU/MAS sanctions screening</li>
+          <li>End-to-end monitoring — &lt;500ms inline decision</li>
+          <li>Velocity &amp; behavior analytics (AI/ML)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 12: ROADMAP -->
+<div class="slide" data-slide="12">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:400px;height:400px;top:-100px;right:-80px;background:#22c55e;"></div>
+    <div class="blob" style="width:260px;height:260px;bottom:-60px;left:-40px;background:#22d3ee;opacity:.09;"></div>
+  </div>
+  <canvas class="particle-canvas" style="position:absolute;inset:0;z-index:1;"></canvas>
+  <div class="content">
+    <p class="reveal" style="text-transform:uppercase;letter-spacing:.3em;color:#22c55e;font-size:.8rem;font-weight:700;margin-bottom:.5rem;">Execution Roadmap</p>
+    <h2 class="reveal" style="font-family:var(--font-display);font-size:clamp(1.8rem,3.5vw,2.6rem);font-weight:700;margin-bottom:1.5rem;">0–24 Month Delivery Plan</h2>
+    <div style="position:relative;padding-left:2rem;">
+      <div style="position:absolute;left:.7rem;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,#22c55e,#22d3ee,#a855f7);"></div>
+      <div class="reveal" style="margin-bottom:1.1rem;position:relative;">
+        <div style="position:absolute;left:-1.65rem;top:.2rem;width:12px;height:12px;border-radius:50%;background:#22c55e;box-shadow:0 0 0 4px rgba(34,197,94,.2);"></div>
+        <div style="background:rgba(15,23,42,.86);border:1px solid rgba(34,197,94,.25);border-radius:12px;padding:.9rem 1.1rem;">
+          <div style="font-weight:700;color:#22c55e;font-size:.9rem;">Phase 1 — Foundation (0–6 months)</div>
+          <div style="color:#94a3b8;font-size:.85rem;margin-top:.2rem;">Requirements &amp; corridor sizing • Partner selection (NAPAS bank, wallet) • Canonical ISO 20022 model &amp; API design • MAS MPI licence preparation</div>
+        </div>
+      </div>
+      <div class="reveal" style="margin-bottom:1.1rem;position:relative;">
+        <div style="position:absolute;left:-1.65rem;top:.2rem;width:12px;height:12px;border-radius:50%;background:#22d3ee;box-shadow:0 0 0 4px rgba(34,211,238,.2);"></div>
+        <div style="background:rgba(15,23,42,.86);border:1px solid rgba(34,211,238,.25);border-radius:12px;padding:.9rem 1.1rem;">
+          <div style="font-weight:700;color:#22d3ee;font-size:.9rem;">Phase 2 — Remittance MVP (6–12 months)</div>
+          <div style="color:#94a3b8;font-size:.85rem;margin-top:.2rem;">Build hub &amp; SG connectors • NAPAS/wallet VN payout integration • Launch C2C remittance: instant payout, &lt;1% fee • SWIFT fallback for high-value</div>
+        </div>
+      </div>
+      <div class="reveal" style="margin-bottom:1.1rem;position:relative;">
+        <div style="position:absolute;left:-1.65rem;top:.2rem;width:12px;height:12px;border-radius:50%;background:#a855f7;box-shadow:0 0 0 4px rgba(168,85,247,.2);"></div>
+        <div style="background:rgba(15,23,42,.86);border:1px solid rgba(168,85,247,.25);border-radius:12px;padding:.9rem 1.1rem;">
+          <div style="font-weight:700;color:#a855f7;font-size:.9rem;">Phase 3 — B2B &amp; QR Expansion (12–18 months)</div>
+          <div style="color:#94a3b8;font-size:.85rem;margin-top:.2rem;">SME B2B flows via SWIFT gpi &amp; Visa B2B Connect • VietQR Global / SGQR merchant QR linkage • AI-based smart routing &amp; FX analytics</div>
+        </div>
+      </div>
+      <div class="reveal" style="position:relative;">
+        <div style="position:absolute;left:-1.65rem;top:.2rem;width:12px;height:12px;border-radius:50%;background:linear-gradient(135deg,#22c55e,#a855f7);box-shadow:0 0 0 4px rgba(168,85,247,.15);"></div>
+        <div style="background:rgba(15,23,42,.86);border:1px solid rgba(148,163,184,.25);border-radius:12px;padding:.9rem 1.1rem;">
+          <div style="font-weight:700;font-size:.9rem;">Phase 4 — Tokenized Rails &amp; ASEAN Scale (18–24 months)</div>
+          <div style="color:#94a3b8;font-size:.85rem;margin-top:.2rem;">Ripple/BLOOM/Ubin+ pilot for wholesale settlement • Nexus readiness for multi-country ASEAN expansion • Industrialize playbook for new corridors (MY, TH, ID)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 13: THANK YOU -->
+<div class="slide" data-slide="13">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:500px;height:500px;top:-120px;right:-100px;background:#22c55e;"></div>
+    <div class="blob" style="width:320px;height:320px;bottom:-80px;left:-60px;background:#22d3ee;"></div>
+    <div class="blob" style="width:220px;height:220px;top:42%;left:14%;background:#a855f7;"></div>
+  </div>
+  <canvas class="particle-canvas" style="position:absolute;inset:0;z-index:1;"></canvas>
+  <div class="content text-center">
+    <div style="font-size:80px;margin-bottom:1.2rem;animation:float 3s ease-in-out infinite;" class="reveal">🚀</div>
+    <h1 class="reveal" style="font-family:var(--font-display);font-size:clamp(2.4rem,5.5vw,4rem);font-weight:900;background:linear-gradient(135deg,#22c55e,#22d3ee,#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:1rem;">Ready to Build</h1>
+    <p class="reveal" style="font-size:clamp(.9rem,1.4vw,1.15rem);color:#94a3b8;letter-spacing:.25em;text-transform:uppercase;margin-bottom:2rem;">Cross-Border Payments SG × VN — 2025–2027</p>
+    <div class="reveal" style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+      <span style="background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.35);color:#22c55e;padding:.35rem 1.1rem;border-radius:999px;font-size:.85rem;">Singapore</span>
+      <span style="background:rgba(34,211,238,.12);border:1px solid rgba(34,211,238,.35);color:#22d3ee;padding:.35rem 1.1rem;border-radius:999px;font-size:.85rem;">Vietnam</span>
+      <span style="background:rgba(168,85,247,.12);border:1px solid rgba(168,85,247,.35);color:#a855f7;padding:.35rem 1.1rem;border-radius:999px;font-size:.85rem;">ASEAN</span>
+    </div>
+  </div>
+</div>
+
+</div><!-- end .deck -->
+
+<div class="nav-controls">
+  <button class="nav-btn" onclick="changeSlide(-1)">&#8249;</button>
+  <div class="slide-dots" id="dots"></div>
+  <button class="nav-btn" onclick="changeSlide(1)">&#8250;</button>
+  <span class="slide-counter" id="counter">1 / 13</span>
+</div>
+
+<script>
+  let current = 1;
+  const total = document.querySelectorAll('.slide').length;
+  const dotsContainer = document.getElementById('dots');
+  const counter = document.getElementById('counter');
+  for (let i = 1; i <= total; i++) {
+    const dot = document.createElement('div');
+    dot.className = 'dot' + (i === 1 ? ' active' : '');
+    dot.onclick = () => goToSlide(i);
+    dotsContainer.appendChild(dot);
+  }
+  function goToSlide(n) {
+    const prev = document.querySelector('.slide.active');
+    const next = document.querySelector('.slide[data-slide="' + n + '"]');
+    if (prev) prev.classList.remove('active');
+    if (next) { next.classList.add('active'); animateSlide(next); }
+    current = n; updateNav();
+  }
+  function changeSlide(dir) { let n = current + dir; if (n < 1) n = total; if (n > total) n = 1; goToSlide(n); }
+  function updateNav() {
+    document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i + 1 === current));
+    counter.textContent = current + ' / ' + total;
+  }
+  document.addEventListener('keydown', e => { if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); changeSlide(1); } if (e.key === 'ArrowLeft') { e.preventDefault(); changeSlide(-1); } });
+  let touchStartX = 0;
+  document.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; });
+  document.addEventListener('touchend', e => { const diff = touchStartX - e.changedTouches[0].clientX; if (Math.abs(diff) > 50) changeSlide(diff > 0 ? 1 : -1); });
+  document.addEventListener('mousemove', e => {
+    const s = document.querySelector('.mouse-spotlight');
+    if (s) s.style.background = 'radial-gradient(600px circle at ' + e.clientX + 'px ' + e.clientY + 'px, rgba(34,197,94,0.06), transparent 40%)';
+  });
+  function animateSlide(slide) {
+    slide.querySelectorAll('.reveal').forEach((el, i) => {
+      el.style.transition = 'none';
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(18px)';
+      el.offsetHeight;
+      const delay = i * 0.08;
+      el.style.transition = 'opacity 0.35s ease ' + delay + 's, transform 0.35s ease ' + delay + 's';
+      el.style.opacity = '1';
+      el.style.transform = 'translateY(0)';
+    });
+    slide.querySelectorAll('[data-count]:not(.counted)').forEach(el => {
+      el.classList.add('counted');
+      const target = parseInt(el.dataset.count);
+      const suffix = el.dataset.suffix || '', prefix = el.dataset.prefix || '';
+      let cur = 0; const step = target / 40;
+      const timer = setInterval(() => { cur += step; if (cur >= target) { cur = target; clearInterval(timer); } el.textContent = prefix + Math.round(cur).toLocaleString() + suffix; }, 30);
+    });
+    slide.querySelectorAll('.bar-fill:not(.fill-init)').forEach((bar, i) => {
+      bar.classList.add('fill-init');
+      bar.style.width = '0%'; bar.style.transition = 'width 0.5s ease ' + (i * 0.08) + 's';
+      bar.offsetHeight; bar.style.width = bar.dataset.width + '%';
+    });
+    initParticlesOnSlide(slide);
+  }
+  function initParticlesOnSlide(slide) {
+    slide.querySelectorAll('.particle-canvas').forEach(canvas => {
+      if (canvas._pInit) return; canvas._pInit = true;
+      const ctx = canvas.getContext('2d');
+      canvas.width = canvas.offsetWidth || window.innerWidth;
+      canvas.height = canvas.offsetHeight || window.innerHeight;
+      const rgb = '34,197,94';
+      let mx = -1000, my = -1000;
+      const particles = Array.from({length: 55}, () => ({
+        x: Math.random() * canvas.width, y: Math.random() * canvas.height,
+        vx: (Math.random() - 0.5) * 0.3, vy: (Math.random() - 0.5) * 0.3,
+        size: Math.random() * 2.2 + 0.8, alpha: Math.random() * 0.3 + 0.08
+      }));
+      canvas.addEventListener('mousemove', e => { const r = canvas.getBoundingClientRect(); mx = e.clientX - r.left; my = e.clientY - r.top; });
+      canvas.addEventListener('mouseleave', () => { mx = -1000; my = -1000; });
+      (function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        particles.forEach(p => {
+          const dx = p.x - mx, dy = p.y - my, dist = Math.sqrt(dx*dx + dy*dy);
+          if (dist < 120) { const f = (120 - dist) / 120 * 2; p.vx += (dx/dist)*f*0.1; p.vy += (dy/dist)*f*0.1; }
+          p.vx *= 0.98; p.vy *= 0.98; p.x += p.vx; p.y += p.vy;
+          if (p.x < 0) p.x = canvas.width; if (p.x > canvas.width) p.x = 0;
+          if (p.y < 0) p.y = canvas.height; if (p.y > canvas.height) p.y = 0;
+          ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI*2);
+          ctx.fillStyle = 'rgba(' + rgb + ',' + p.alpha + ')'; ctx.fill();
+        });
+        requestAnimationFrame(animate);
+      })();
+    });
+  }
+  try { animateSlide(document.querySelector('.slide.active')); } catch(e) { console.warn(e); }
+</script>
+</body>
+</html>
